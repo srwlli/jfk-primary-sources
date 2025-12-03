@@ -14,10 +14,10 @@ const categories = [
     href: "/people",
   },
   {
-    name: "Documents",
+    name: "Archives",
     description: "Official records",
     icon: "article",
-    href: "/documents",
+    href: "/archives",
   },
   {
     name: "Investigations",
@@ -32,10 +32,10 @@ const categories = [
     href: "/evidence",
   },
   {
-    name: "Witnesses",
-    description: "Eyewitness accounts",
-    icon: "visibility",
-    href: "/witnesses",
+    name: "Events",
+    description: "Key events",
+    icon: "event",
+    href: "/events",
   },
   {
     name: "Media",
