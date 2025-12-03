@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import Link from "next/link"
 
 interface TimelineImage {
@@ -21,8 +20,16 @@ interface TimelineEvent {
   defaultOpen?: boolean
 }
 
-interface TimelineAccordionProps {
+interface TimelineSection {
+  id: string
+  title: string
   events: TimelineEvent[]
+  defaultOpen?: boolean
+}
+
+interface TimelineAccordionProps {
+  events?: TimelineEvent[]
+  sections?: TimelineSection[]
 }
 
 function TimelineItem({ event }: { event: TimelineEvent }) {
@@ -97,14 +104,54 @@ function TimelineItem({ event }: { event: TimelineEvent }) {
   )
 }
 
-export function TimelineAccordion({ events }: TimelineAccordionProps) {
+function TimelineSectionComponent({ section }: { section: TimelineSection }) {
+  const [isOpen, setIsOpen] = useState(section.defaultOpen ?? true)
+
+  return (
+    <div className="mb-6">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex w-full items-center justify-between gap-4 py-3 text-left border-b-2 border-primary/20"
+      >
+        <h2 className="text-lg font-bold text-primary">{section.title}</h2>
+        <span
+          className={`material-symbols-outlined text-primary transition-transform duration-200 ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        >
+          expand_more
+        </span>
+      </button>
+
+      {isOpen && (
+        <div className="mt-2">
+          {section.events.map((event) => (
+            <TimelineItem key={event.id} event={event} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function TimelineAccordion({ events, sections }: TimelineAccordionProps) {
+  if (sections) {
+    return (
+      <div className="flex flex-col">
+        {sections.map((section) => (
+          <TimelineSectionComponent key={section.id} section={section} />
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col">
-      {events.map((event) => (
+      {events?.map((event) => (
         <TimelineItem key={event.id} event={event} />
       ))}
     </div>
   )
 }
 
-export type { TimelineEvent, TimelineImage }
+export type { TimelineEvent, TimelineImage, TimelineSection }

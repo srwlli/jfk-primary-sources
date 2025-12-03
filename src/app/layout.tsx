@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/header";
 import { Navigation } from "@/components/navigation";
+import { ScrollToTop } from "@/components/scroll-to-top";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -70,9 +71,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
-            <div className="flex-grow pb-24">
-              <Header />
+          <ScrollToTop />
+          <div className="relative flex min-h-screen w-full flex-col">
+            <Header />
+            <div className="flex-grow pt-[52px] pb-20">
               <main>{children}</main>
             </div>
             <Navigation />

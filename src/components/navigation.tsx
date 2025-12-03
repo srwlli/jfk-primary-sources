@@ -15,8 +15,8 @@ export function Navigation() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 h-24 bg-card/90 backdrop-blur-sm border-t border-border shadow-[0_-2px_10px_rgba(0,0,0,0.05)] dark:shadow-[0_-2px_10px_rgba(0,0,0,0.2)] z-50">
-      <div className="flex justify-around items-start h-full pt-2.5">
+    <nav className="fixed bottom-0 left-0 right-0 h-[75px] bg-card/90 backdrop-blur-sm border-t border-border shadow-[0_-2px_10px_rgba(0,0,0,0.05)] dark:shadow-[0_-2px_10px_rgba(0,0,0,0.2)] z-50">
+      <div className="flex justify-around items-center h-full">
         {tabs.map((tab) => {
           const isActive = pathname === tab.href
           return (

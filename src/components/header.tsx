@@ -34,14 +34,14 @@ export function Header() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="flex items-center p-4 pb-2 justify-between">
-      <div className="flex size-12 shrink-0 items-center justify-start">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background flex items-center px-3 py-2 justify-between border-b border-border">
+      <div className="flex size-9 shrink-0 items-center justify-start">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="h-12 w-12 p-0 bg-transparent"
+              className="h-9 w-9 p-0 bg-transparent"
             >
               <span className="material-symbols-outlined">menu</span>
               <span className="sr-only">Toggle menu</span>
@@ -81,11 +81,11 @@ export function Header() {
       <h1 className="text-lg font-bold leading-tight tracking-tight flex-1 text-center">
         JFK Primary Sources
       </h1>
-      <div className="flex w-12 items-center justify-end">
+      <div className="flex w-9 items-center justify-end">
         <Button
           variant="ghost"
           size="icon"
-          className="h-12 w-12 p-0 bg-transparent"
+          className="h-9 w-9 p-0 bg-transparent"
         >
           <span className="material-symbols-outlined">account_circle</span>
           <span className="sr-only">Account</span>
