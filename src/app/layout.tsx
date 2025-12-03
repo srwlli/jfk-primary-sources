@@ -72,13 +72,13 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ScrollToTop />
+          <Header />
           <div className="relative flex min-h-screen w-full flex-col">
-            <Header />
             <div className="flex-grow pt-[52px] pb-20">
               <main>{children}</main>
             </div>
-            <Navigation />
           </div>
+          <Navigation />
         </ThemeProvider>
       </body>
     </html>

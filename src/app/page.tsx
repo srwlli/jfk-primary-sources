@@ -32,10 +32,10 @@ const categories = [
     href: "/evidence",
   },
   {
-    name: "Events",
-    description: "Key events",
-    icon: "event",
-    href: "/events",
+    name: "Incidents",
+    description: "Key incidents",
+    icon: "warning",
+    href: "/incidents",
   },
   {
     name: "Media",
@@ -44,10 +44,16 @@ const categories = [
     href: "/media",
   },
   {
-    name: "More",
-    description: "Additional resources",
-    icon: "more_horiz",
-    href: "/more",
+    name: "Sources",
+    description: "Blogs & podcasts",
+    icon: "rss_feed",
+    href: "/sources",
+  },
+  {
+    name: "About",
+    description: "Our mission",
+    icon: "info",
+    href: "/about",
   },
 ]
 

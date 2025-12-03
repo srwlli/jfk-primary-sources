@@ -2099,7 +2099,7 @@ export const lhoTimelineSections: TimelineSection[] = [
   {
     id: "assassination-weekend",
     title: "The Assassination Weekend (November 22-24, 1963)",
-    defaultOpen: true,
+    defaultOpen: false,
     events: [
       {
         id: "aw1",
@@ -2160,7 +2160,6 @@ export const lhoTimelineSections: TimelineSection[] = [
         datetime: "November 22, 1963, 12:30 PM",
         title: "Assassination",
         description: "LHO assassinates President John F. Kennedy.",
-        defaultOpen: true,
       },
       {
         id: "aw11",

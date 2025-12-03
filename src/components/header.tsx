@@ -22,7 +22,7 @@ const navLinks = [
   { name: "Archives", href: "/archives", icon: "article" },
   { name: "Investigations", href: "/investigations", icon: "manage_search" },
   { name: "Evidence", href: "/evidence", icon: "inventory_2" },
-  { name: "Events", href: "/events", icon: "event" },
+  { name: "Incidents", href: "/incidents", icon: "warning" },
   { name: "Media", href: "/media", icon: "movie" },
   { name: "Latest", href: "/latest", icon: "update" },
   { name: "Saved", href: "/saved", icon: "bookmark" },
