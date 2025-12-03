@@ -12,15 +12,30 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "JFK Primary Sources",
-  description: "JFK Primary Sources Application",
-  manifest: "/manifest.json",
+  description: "JFK Primary Sources Application - Historical documents and research",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "JFK Sources",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#4A55A2",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f0f2f5" },
+    { media: "(prefers-color-scheme: dark)", color: "#1a1a2e" },
+  ],
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -31,10 +46,22 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Material Symbols */}
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
           rel="stylesheet"
         />
+
+        {/* iOS Splash Screens */}
+        <link
+          rel="apple-touch-startup-image"
+          href="/icons/icon-512.png"
+        />
+
+        {/* Additional iOS meta tags for older Safari versions */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="JFK Sources" />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider
