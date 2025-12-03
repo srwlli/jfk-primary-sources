@@ -1,13 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Playfair_Display, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeContextProvider } from "@/contexts/theme-context";
 import { Header } from "@/components/header";
 import { Navigation } from "@/components/navigation";
 import { ScrollToTop } from "@/components/scroll-to-top";
 
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+});
+
+const sourceSans = Source_Sans_3({
+  variable: "--font-source-sans",
   subsets: ["latin"],
 });
 
@@ -64,21 +75,23 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="JFK Sources" />
       </head>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${playfair.variable} ${sourceSans.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <ScrollToTop />
-          <Header />
-          <div className="relative flex min-h-screen w-full flex-col">
-            <div className="flex-grow pt-[52px] pb-20">
-              <main>{children}</main>
+          <ThemeContextProvider>
+            <ScrollToTop />
+            <Header />
+            <div className="relative flex min-h-screen w-full flex-col">
+              <div className="flex-grow pt-[52px] pb-20">
+                <main>{children}</main>
+              </div>
             </div>
-          </div>
-          <Navigation />
+            <Navigation />
+          </ThemeContextProvider>
         </ThemeProvider>
       </body>
     </html>

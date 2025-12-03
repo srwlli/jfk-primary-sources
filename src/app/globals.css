@@ -57,6 +57,10 @@
 }
 
 :root {
+  /* Dynamic font variables - set by ThemeContext */
+  --font-display: 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
   --radius: 0.625rem;
   --background: #f0f2f5;
   --foreground: #1c1e21;
@@ -136,6 +140,11 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+  /* Headings use display font */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
   }
 }
 
