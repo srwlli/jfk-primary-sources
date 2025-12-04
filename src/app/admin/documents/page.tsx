@@ -15,6 +15,14 @@ import {
   uploadDocumentFile,
   DocumentFormData
 } from "./actions"
+import {
+  extractDocumentMetadata,
+  ExtractionResult,
+  ExtractionProgress,
+  isFileTypeSupported,
+  getSupportedFileTypes
+} from "@/lib/extraction"
+import { ExtractionPreview, AppliedMetadata } from "@/components/extraction-preview"
 
 const categoryOptions: DocumentCategory[] = [
   'testimony', 'report', 'memo', 'correspondence', 'photograph',
@@ -46,6 +54,11 @@ export default function AdminDocumentsPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [showForm, setShowForm] = useState(false)
 
+  // Extraction state
+  const [isExtracting, setIsExtracting] = useState(false)
+  const [extractionResult, setExtractionResult] = useState<ExtractionResult | null>(null)
+  const [extractionProgress, setExtractionProgress] = useState<ExtractionProgress | null>(null)
+
   // Form state
   const [formData, setFormData] = useState<DocumentFormData>({
     title: '',
@@ -71,6 +84,53 @@ export default function AdminDocumentsPage() {
     const docs = await getDocuments()
     setDocuments(docs)
     setLoading(false)
+  }
+
+  async function handleExtractMetadata() {
+    if (!selectedFile) return
+    if (!isFileTypeSupported(selectedFile)) {
+      setMessage({
+        type: 'error',
+        text: `File type not supported for extraction. Supported: ${getSupportedFileTypes().join(', ')}`
+      })
+      return
+    }
+
+    setIsExtracting(true)
+    setExtractionResult(null)
+    setMessage(null)
+
+    try {
+      const result = await extractDocumentMetadata(selectedFile, (progress) => {
+        setExtractionProgress(progress)
+      })
+      setExtractionResult(result)
+    } catch (error) {
+      setMessage({
+        type: 'error',
+        text: `Extraction failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      })
+    } finally {
+      setIsExtracting(false)
+    }
+  }
+
+  function handleApplyExtraction(data: AppliedMetadata) {
+    setFormData(prev => ({
+      ...prev,
+      title: data.title || prev.title,
+      slug: data.title ? generateSlug(data.title) : prev.slug,
+      date: data.date || prev.date,
+      agency: data.agency || prev.agency,
+      document_number: data.documentNumber || prev.document_number
+    }))
+    setExtractionResult(null)
+    setMessage({ type: 'success', text: 'Metadata applied to form!' })
+  }
+
+  function handleCancelExtraction() {
+    setExtractionResult(null)
+    setExtractionProgress(null)
   }
 
   function generateSlug(title: string): string {
@@ -144,6 +204,8 @@ export default function AdminDocumentsPage() {
       })
       setSelectedFile(null)
       setUploadProgress(0)
+      setExtractionResult(null)
+      setExtractionProgress(null)
       setShowForm(false)
       loadDocuments()
     } else {
@@ -343,7 +405,11 @@ export default function AdminDocumentsPage() {
                 type="file"
                 id="file-upload"
                 accept=".pdf,.jpg,.jpeg,.png,.txt,.doc,.docx"
-                onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                onChange={(e) => {
+                  setSelectedFile(e.target.files?.[0] || null)
+                  setExtractionResult(null)
+                  setExtractionProgress(null)
+                }}
                 className="hidden"
               />
               <label htmlFor="file-upload" className="cursor-pointer">
@@ -396,7 +462,43 @@ export default function AdminDocumentsPage() {
                 </div>
               </div>
             )}
+
+            {/* Extract Metadata Button */}
+            {selectedFile && isFileTypeSupported(selectedFile) && !extractionResult && (
+              <div className="mt-3">
+                <button
+                  type="button"
+                  onClick={handleExtractMetadata}
+                  disabled={isExtracting}
+                  className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 disabled:opacity-50"
+                >
+                  {isExtracting ? (
+                    <>
+                      <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>
+                      Extracting metadata...
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-lg">auto_fix_high</span>
+                      Extract metadata from file
+                    </>
+                  )}
+                </button>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Automatically detect title, date, agency, and document number
+                </p>
+              </div>
+            )}
           </div>
+
+          {/* Extraction Preview */}
+          <ExtractionPreview
+            result={extractionResult}
+            progress={extractionProgress}
+            isExtracting={isExtracting}
+            onApply={handleApplyExtraction}
+            onCancel={handleCancelExtraction}
+          />
 
           {/* Submit */}
           <div className="flex justify-end gap-3 pt-4">

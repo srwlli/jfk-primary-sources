@@ -1,0 +1,115 @@
+[
+  {
+    "timestamp": "2025-12-04T11:28:08.157234",
+    "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+    "feature_name": "document-metadata-extraction",
+    "task_count": 21,
+    "tasks": [
+      {
+        "content": "PHASE-1--001: [ ] Install pdfjs-dist and tesseract.js packages",
+        "activeForm": "PHASE-1--001: [ing ] Install pdfjs-dist and tesseract.js packages",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-1--002: [ ] Create src/lib/extraction/ directory",
+        "activeForm": "PHASE-1--002: [ing ] Create src/lib/extraction/ directory",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-1--003: [ ] Implement pdf-extractor.ts with text extraction",
+        "activeForm": "PHASE-1--003: [ing ] Implement pdf-extractor.ts with text extraction",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-1--004: [ ] Add PDF page-to-image rendering for scanned docs",
+        "activeForm": "PHASE-1--004: [ing ] Add PDF page-to-image rendering for scanned docs",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-1--005: [ ] Implement ocr-extractor.ts with Tesseract.js",
+        "activeForm": "PHASE-1--005: [ing ] Implement ocr-extractor.ts with Tesseract.js",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-1--006: [ ] Add image preprocessing (contrast, threshold)",
+        "activeForm": "PHASE-1--006: [ing ] Add image preprocessing (contrast, threshold)",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--001: [ ] Implement title extraction in metadata-parser.ts",
+        "activeForm": "PHASE-2--001: [ing ] Implement title extraction in metadata-parser.ts",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--002: [ ] Add date extraction with regex patterns",
+        "activeForm": "PHASE-2--002: [ing ] Add date extraction with regex patterns",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--003: [ ] Implement agency detection with keyword matching",
+        "activeForm": "PHASE-2--003: [ing ] Implement agency detection with keyword matching",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--004: [ ] Add document number extraction patterns",
+        "activeForm": "PHASE-2--004: [ing ] Add document number extraction patterns",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--001: [ ] Create extraction orchestrator in index.ts",
+        "activeForm": "PHASE-3--001: [ing ] Create extraction orchestrator in index.ts",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--002: [ ] Add confidence scoring system",
+        "activeForm": "PHASE-3--002: [ing ] Add confidence scoring system",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--003: [ ] Create extraction-preview.tsx component",
+        "activeForm": "PHASE-3--003: [ing ] Create extraction-preview.tsx component",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--004: [ ] Add 'Extract Metadata' button to admin form",
+        "activeForm": "PHASE-3--004: [ing ] Add 'Extract Metadata' button to admin form",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--005: [ ] Implement auto-fill from extraction results",
+        "activeForm": "PHASE-3--005: [ing ] Implement auto-fill from extraction results",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--006: [ ] Add progress indicator during extraction",
+        "activeForm": "PHASE-3--006: [ing ] Add progress indicator during extraction",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-4--001: [ ] Add multi-file selection support",
+        "activeForm": "PHASE-4--001: [ing ] Add multi-file selection support",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-4--002: [ ] Implement batch extraction queue",
+        "activeForm": "PHASE-4--002: [ing ] Implement batch extraction queue",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-4--003: [ ] Test with various document types",
+        "activeForm": "PHASE-4--003: [ing ] Test with various document types",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-4--004: [ ] Test with poor quality scans",
+        "activeForm": "PHASE-4--004: [ing ] Test with poor quality scans",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-4--005: [ ] Verify all metadata fields populate correctly",
+        "activeForm": "PHASE-4--005: [ing ] Verify all metadata fields populate correctly",
+        "status": "pending"
+      }
+    ]
+  }
+]
