@@ -126,6 +126,11 @@
       "name": "locations",
       "seed_script": "scripts/seed-locations.mjs",
       "conflict_key": "slug"
+    },
+    {
+      "name": "documents",
+      "seed_script": "scripts/seed-documents.mjs",
+      "conflict_key": "slug"
     }
   ],
 

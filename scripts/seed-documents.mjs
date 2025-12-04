@@ -1,10 +1,10 @@
 // Seed script for documents table
-// Run: SUPABASE_SERVICE_ROLE_KEY="your_key" node scripts/seed-documents.mjs
+// Run: SUPABASE_SERVICE_ROLE_KEY="sb_secret_xxx" node scripts/seed-documents.mjs
 
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://your-project.supabase.co'
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+const supabaseUrl = 'https://grdwmwhqzvvjkfpfeauh.supabase.co'
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 if (!supabaseKey) {
   console.error('Missing SUPABASE_SERVICE_ROLE_KEY environment variable')
