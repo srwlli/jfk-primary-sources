@@ -1,7 +1,7 @@
 // OCR extraction using Tesseract.js
 // Handles image files and scanned PDF pages
 
-import Tesseract, { createWorker, Worker } from 'tesseract.js'
+import { createWorker, Worker } from 'tesseract.js'
 
 export interface OCRResult {
   text: string
@@ -69,14 +69,9 @@ export async function extractTextFromImage(
   // Preprocess image for better OCR
   const processedSource = await preprocessImage(source)
 
-  const result = await worker.recognize(processedSource, {
-    // @ts-expect-error - Tesseract types may not be complete
-    logger: (m: { progress?: number }) => {
-      if (onProgress && m.progress !== undefined) {
-        onProgress(Math.round(m.progress * 100))
-      }
-    }
-  })
+  // Note: Progress callback is handled by the worker's logger set during creation
+  // We can't pass logger to recognize() as it can't be cloned for postMessage
+  const result = await worker.recognize(processedSource)
 
   // Extract words from the result (handle type differences between Tesseract versions)
   const data = result.data as unknown as {

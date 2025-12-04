@@ -14,10 +14,16 @@ const categories = [
     href: "/people",
   },
   {
-    name: "Archives",
-    description: "Official records",
-    icon: "article",
-    href: "/archives",
+    name: "Documents",
+    description: "Declassified files",
+    icon: "description",
+    href: "/documents",
+  },
+  {
+    name: "Warren Report",
+    description: "Full commission report",
+    icon: "menu_book",
+    href: "/warren-report",
   },
   {
     name: "Investigations",
@@ -44,6 +50,12 @@ const categories = [
     href: "/locations",
   },
   {
+    name: "Archives",
+    description: "Official records",
+    icon: "article",
+    href: "/archives",
+  },
+  {
     name: "Media",
     description: "News & film",
     icon: "movie",
@@ -54,6 +66,18 @@ const categories = [
     description: "Blogs & podcasts",
     icon: "rss_feed",
     href: "/sources",
+  },
+  {
+    name: "Latest",
+    description: "Recent updates",
+    icon: "update",
+    href: "/latest",
+  },
+  {
+    name: "Saved",
+    description: "Your bookmarks",
+    icon: "bookmark",
+    href: "/saved",
   },
   {
     name: "About",
