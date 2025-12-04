@@ -1,7 +1,7 @@
 // Search result types
 export interface SearchResult {
   id: string
-  type: 'person' | 'location' | 'investigation' | 'incident' | 'evidence' | 'source' | 'timeline'
+  type: 'person' | 'location' | 'investigation' | 'incident' | 'evidence' | 'source' | 'timeline' | 'document'
   title: string
   snippet: string
   href: string
@@ -16,6 +16,7 @@ export interface GroupedSearchResults {
   evidence: SearchResult[]
   sources: SearchResult[]
   timeline: SearchResult[]
+  documents: SearchResult[]
   totalCount: number
 }
 
@@ -110,6 +111,7 @@ export function emptyResults(): GroupedSearchResults {
     evidence: [],
     sources: [],
     timeline: [],
+    documents: [],
     totalCount: 0
   }
 }

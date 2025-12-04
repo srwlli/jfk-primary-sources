@@ -24,6 +24,7 @@ const categories = [
   { key: 'investigations', label: 'Investigations', icon: 'gavel' },
   { key: 'incidents', label: 'Incidents', icon: 'warning' },
   { key: 'evidence', label: 'Evidence', icon: 'inventory_2' },
+  { key: 'documents', label: 'Documents', icon: 'description' },
   { key: 'sources', label: 'Sources', icon: 'menu_book' },
   { key: 'timeline', label: 'Timeline', icon: 'schedule' },
 ] as const

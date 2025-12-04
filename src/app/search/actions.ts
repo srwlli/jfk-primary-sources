@@ -33,7 +33,8 @@ export async function search(query: string): Promise<GroupedSearchResults> {
     incidentResults,
     evidenceResults,
     sourceResults,
-    timelineResults
+    timelineResults,
+    documentResults
   ] = await Promise.all([
     searchPeople(trimmedQuery),
     searchLocations(trimmedQuery),
@@ -41,7 +42,8 @@ export async function search(query: string): Promise<GroupedSearchResults> {
     searchIncidents(trimmedQuery),
     searchEvidence(trimmedQuery),
     searchSources(trimmedQuery),
-    searchTimeline(trimmedQuery)
+    searchTimeline(trimmedQuery),
+    searchDocuments(trimmedQuery)
   ])
 
   const totalCount =
@@ -51,7 +53,8 @@ export async function search(query: string): Promise<GroupedSearchResults> {
     incidentResults.length +
     evidenceResults.length +
     sourceResults.length +
-    timelineResults.length
+    timelineResults.length +
+    documentResults.length
 
   return {
     people: peopleResults,
@@ -61,6 +64,7 @@ export async function search(query: string): Promise<GroupedSearchResults> {
     evidence: evidenceResults,
     sources: sourceResults,
     timeline: timelineResults,
+    documents: documentResults,
     totalCount
   }
 }
@@ -224,4 +228,23 @@ async function searchTimeline(query: string): Promise<SearchResult[]> {
   }
 
   return results.sort((a, b) => b.rank - a.rank).slice(0, 10)
+}
+
+async function searchDocuments(query: string): Promise<SearchResult[]> {
+  const { data, error } = await supabase
+    .from('documents')
+    .select('id, slug, title, description, summary, agency, category')
+    .or(`title.ilike.%${query}%,description.ilike.%${query}%,summary.ilike.%${query}%`)
+    .limit(10)
+
+  if (error || !data) return []
+
+  return data.map(doc => ({
+    id: doc.id,
+    type: 'document' as const,
+    title: doc.title,
+    snippet: createSnippet(doc.description || doc.summary || '', query),
+    href: `/documents/${doc.slug}`,
+    rank: scoreMatch(doc.title + ' ' + (doc.description || '') + ' ' + (doc.summary || ''), query)
+  })).sort((a, b) => b.rank - a.rank)
 }

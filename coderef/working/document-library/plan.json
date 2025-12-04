@@ -1,0 +1,508 @@
+{
+  "META_DOCUMENTATION": {
+    "feature_name": "document-library",
+    "version": "1.0.0",
+    "status": "complete",
+    "generated_by": "AI Assistant",
+    "generated_at": "2025-12-03",
+    "has_context": true,
+    "has_analysis": true
+  },
+  "UNIVERSAL_PLANNING_STRUCTURE": {
+    "0_preparation": {
+      "foundation_docs": {
+        "readme": "README.md",
+        "architecture": "coderef/foundation-docs/ARCHITECTURE.md",
+        "api": "coderef/foundation-docs/API.md",
+        "components": "coderef/foundation-docs/COMPONENTS.md",
+        "schema": "coderef/foundation-docs/SCHEMA.md"
+      },
+      "key_files": {
+        "supabase_client": "src/lib/supabase.ts",
+        "existing_migration_pattern": "supabase/migrations/20251203181826_create_investigations_table.sql",
+        "page_pattern": "src/app/investigations/page.tsx",
+        "detail_pattern": "src/app/investigations/[slug]/page.tsx"
+      },
+      "existing_patterns": {
+        "supabase_query": "Server-side Supabase queries in page.tsx files",
+        "slug_routing": "Dynamic [slug] routes for detail pages",
+        "jsonb_storage": "JSONB columns for flexible nested data",
+        "rls_policy": "Public read access with Row Level Security",
+        "styling": "Tailwind CSS with CSS variables for theming",
+        "icons": "Material Symbols Outlined"
+      }
+    },
+    "1_executive_summary": {
+      "feature_description": "Centralized document library for 2000+ primary source documents with consistent metadata, search, and display across all formats",
+      "primary_goal": "Enable researchers to discover, browse, and reference primary source documents with consistent metadata and agency attribution",
+      "target_audience": "Serious researchers studying the JFK assassination",
+      "scope": {
+        "in_scope": [
+          "Normalized document metadata schema (title, date, source, agency)",
+          "Agency attribution (FBI, DPD, Marines, CIA, Secret Service, etc.)",
+          "Document listing page with filtering and sorting",
+          "Document detail page with metadata and content viewer",
+          "Full-text search integration with existing search feature",
+          "Document categorization (testimony, report, memo, photo, etc.)",
+          "Related entities linking (people, locations, incidents)",
+          "Supabase Storage for file uploads",
+          "Admin upload interface"
+        ],
+        "out_of_scope": [
+          "OCR processing pipeline (documents come pre-processed)",
+          "Audio/video streaming",
+          "Collaborative annotations",
+          "Version control/revisions",
+          "Bulk import CLI tool (future phase)"
+        ]
+      }
+    },
+    "2_risk_assessment": {
+      "complexity_score": 5,
+      "complexity_rationale": "Medium-high complexity due to large document volume (2000+), file storage integration, and need for consistent metadata schema across varied source formats",
+      "risks": [
+        {
+          "risk": "Supabase Storage configuration and bucket policies",
+          "likelihood": "medium",
+          "impact": "high",
+          "mitigation": "Create dedicated bucket with proper RLS policies, test with small uploads first"
+        },
+        {
+          "risk": "Performance with 2000+ documents in listing",
+          "likelihood": "high",
+          "impact": "medium",
+          "mitigation": "Implement pagination, add database indexes, lazy load document content"
+        },
+        {
+          "risk": "Inconsistent metadata from varied sources",
+          "likelihood": "high",
+          "impact": "medium",
+          "mitigation": "Strict schema validation, required vs optional fields, agency normalization"
+        },
+        {
+          "risk": "File size limits and upload timeouts",
+          "likelihood": "medium",
+          "impact": "medium",
+          "mitigation": "Set reasonable file size limits (10MB), chunked uploads for large files"
+        }
+      ],
+      "dependencies": [
+        "Supabase Storage enabled on project",
+        "Existing search feature for integration",
+        "Theme system for consistent styling"
+      ]
+    },
+    "3_current_state_analysis": {
+      "existing_files": {
+        "src/lib/supabase.ts": {
+          "status": "exists",
+          "action": "reference",
+          "notes": "Use existing Supabase client pattern"
+        },
+        "src/app/search/actions.ts": {
+          "status": "exists",
+          "action": "modify",
+          "notes": "Add document search function"
+        },
+        "src/lib/search.ts": {
+          "status": "exists",
+          "action": "modify",
+          "notes": "Add document type to SearchResult union"
+        }
+      },
+      "new_files": {
+        "supabase/migrations/[timestamp]_create_documents_table.sql": {
+          "purpose": "Create documents table with metadata schema",
+          "exports": []
+        },
+        "src/app/documents/page.tsx": {
+          "purpose": "Document library listing page",
+          "exports": ["default"]
+        },
+        "src/app/documents/[slug]/page.tsx": {
+          "purpose": "Document detail page",
+          "exports": ["default", "generateStaticParams", "generateMetadata"]
+        },
+        "src/app/admin/documents/page.tsx": {
+          "purpose": "Admin upload interface",
+          "exports": ["default"]
+        },
+        "src/app/admin/documents/actions.ts": {
+          "purpose": "Server actions for document CRUD",
+          "exports": ["uploadDocument", "updateDocument", "deleteDocument"]
+        },
+        "src/types/document.ts": {
+          "purpose": "TypeScript interfaces for documents",
+          "exports": ["Document", "DocumentCategory", "DocumentAgency", "DocumentMetadata"]
+        },
+        "scripts/seed-documents.mjs": {
+          "purpose": "Seed script for initial documents",
+          "exports": []
+        }
+      }
+    },
+    "4_key_features": {
+      "features": [
+        {
+          "id": "DOC-SCHEMA",
+          "name": "Document Schema & Types",
+          "description": "Database table, TypeScript types, and metadata schema for consistent document storage",
+          "priority": "critical",
+          "dependencies": []
+        },
+        {
+          "id": "DOC-LIST",
+          "name": "Document Listing Page",
+          "description": "Browse all documents with filtering by category, date, agency",
+          "priority": "high",
+          "dependencies": ["DOC-SCHEMA"]
+        },
+        {
+          "id": "DOC-DETAIL",
+          "name": "Document Detail Page",
+          "description": "View document metadata, content preview, and related entities",
+          "priority": "high",
+          "dependencies": ["DOC-SCHEMA"]
+        },
+        {
+          "id": "DOC-UPLOAD",
+          "name": "Admin Upload Interface",
+          "description": "Upload documents with metadata form and file storage",
+          "priority": "high",
+          "dependencies": ["DOC-SCHEMA"]
+        },
+        {
+          "id": "DOC-SEARCH",
+          "name": "Search Integration",
+          "description": "Add documents to existing search functionality",
+          "priority": "medium",
+          "dependencies": ["DOC-SCHEMA", "DOC-LIST"]
+        }
+      ]
+    },
+    "5_task_id_system": {
+      "workorder": {
+        "id": "WO-DOCUMENT-LIBRARY-001",
+        "name": "Document Library",
+        "feature_dir": "coderef/working/document-library"
+      },
+      "tasks": [
+        {
+          "id": "SCHEMA-001",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Create TypeScript interfaces for Document types",
+          "file": "src/types/document.ts",
+          "action": "create",
+          "estimated_loc": 60,
+          "dependencies": []
+        },
+        {
+          "id": "SCHEMA-002",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Create documents table migration",
+          "file": "supabase/migrations/[timestamp]_create_documents_table.sql",
+          "action": "create",
+          "estimated_loc": 50,
+          "dependencies": ["SCHEMA-001"]
+        },
+        {
+          "id": "SCHEMA-003",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Create Supabase Storage bucket for documents",
+          "file": "supabase/migrations/[timestamp]_create_documents_bucket.sql",
+          "action": "create",
+          "estimated_loc": 20,
+          "dependencies": ["SCHEMA-002"]
+        },
+        {
+          "id": "LIST-001",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Create documents listing page with basic query",
+          "file": "src/app/documents/page.tsx",
+          "action": "create",
+          "estimated_loc": 80,
+          "dependencies": ["SCHEMA-002"]
+        },
+        {
+          "id": "LIST-002",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Add category filter component",
+          "file": "src/app/documents/page.tsx",
+          "action": "modify",
+          "estimated_loc": 40,
+          "dependencies": ["LIST-001"]
+        },
+        {
+          "id": "LIST-005",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Add agency filter component (FBI, DPD, CIA, Marines, Secret Service, etc.)",
+          "file": "src/app/documents/page.tsx",
+          "action": "modify",
+          "estimated_loc": 40,
+          "dependencies": ["LIST-001"]
+        },
+        {
+          "id": "LIST-003",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Add pagination component",
+          "file": "src/app/documents/page.tsx",
+          "action": "modify",
+          "estimated_loc": 50,
+          "dependencies": ["LIST-001"]
+        },
+        {
+          "id": "LIST-004",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Add sorting controls (date, title, agency)",
+          "file": "src/app/documents/page.tsx",
+          "action": "modify",
+          "estimated_loc": 30,
+          "dependencies": ["LIST-001"]
+        },
+        {
+          "id": "DETAIL-001",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Create document detail page with metadata display",
+          "file": "src/app/documents/[slug]/page.tsx",
+          "action": "create",
+          "estimated_loc": 100,
+          "dependencies": ["SCHEMA-002"]
+        },
+        {
+          "id": "DETAIL-002",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Add related entities section (people, locations, incidents)",
+          "file": "src/app/documents/[slug]/page.tsx",
+          "action": "modify",
+          "estimated_loc": 60,
+          "dependencies": ["DETAIL-001"]
+        },
+        {
+          "id": "DETAIL-003",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Add document viewer/preview component",
+          "file": "src/app/documents/[slug]/page.tsx",
+          "action": "modify",
+          "estimated_loc": 50,
+          "dependencies": ["DETAIL-001"]
+        },
+        {
+          "id": "UPLOAD-001",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Create admin documents page with upload form",
+          "file": "src/app/admin/documents/page.tsx",
+          "action": "create",
+          "estimated_loc": 120,
+          "dependencies": ["SCHEMA-002", "SCHEMA-003"]
+        },
+        {
+          "id": "UPLOAD-002",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Create server actions for document CRUD",
+          "file": "src/app/admin/documents/actions.ts",
+          "action": "create",
+          "estimated_loc": 100,
+          "dependencies": ["SCHEMA-002", "SCHEMA-003"]
+        },
+        {
+          "id": "UPLOAD-003",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Add metadata form with validation",
+          "file": "src/app/admin/documents/page.tsx",
+          "action": "modify",
+          "estimated_loc": 80,
+          "dependencies": ["UPLOAD-001"]
+        },
+        {
+          "id": "UPLOAD-004",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Add file upload with progress indicator",
+          "file": "src/app/admin/documents/page.tsx",
+          "action": "modify",
+          "estimated_loc": 60,
+          "dependencies": ["UPLOAD-001", "UPLOAD-002"]
+        },
+        {
+          "id": "SEARCH-001",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Add 'document' type to SearchResult interface",
+          "file": "src/lib/search.ts",
+          "action": "modify",
+          "estimated_loc": 10,
+          "dependencies": ["SCHEMA-002"]
+        },
+        {
+          "id": "SEARCH-002",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Implement searchDocuments function",
+          "file": "src/app/search/actions.ts",
+          "action": "modify",
+          "estimated_loc": 40,
+          "dependencies": ["SEARCH-001"]
+        },
+        {
+          "id": "SEARCH-003",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Add documents category to search page UI",
+          "file": "src/app/search/page.tsx",
+          "action": "modify",
+          "estimated_loc": 15,
+          "dependencies": ["SEARCH-002"]
+        },
+        {
+          "id": "NAV-001",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Add Documents link to navigation",
+          "file": "src/components/header.tsx",
+          "action": "modify",
+          "estimated_loc": 5,
+          "dependencies": ["LIST-001"]
+        },
+        {
+          "id": "SEED-001",
+          "workorder_id": "WO-DOCUMENT-LIBRARY-001",
+          "description": "Create seed script with sample documents",
+          "file": "scripts/seed-documents.mjs",
+          "action": "create",
+          "estimated_loc": 80,
+          "dependencies": ["SCHEMA-002"]
+        }
+      ]
+    },
+    "6_implementation_phases": {
+      "phases": [
+        {
+          "id": "phase_1",
+          "name": "Schema & Foundation",
+          "description": "Create database schema, TypeScript types, and storage bucket",
+          "tasks": ["SCHEMA-001", "SCHEMA-002", "SCHEMA-003"],
+          "deliverables": ["Document types", "Database migration", "Storage bucket"]
+        },
+        {
+          "id": "phase_2",
+          "name": "Core Pages",
+          "description": "Implement document listing and detail pages",
+          "tasks": ["LIST-001", "LIST-002", "LIST-005", "LIST-003", "LIST-004", "DETAIL-001", "DETAIL-002", "DETAIL-003", "NAV-001"],
+          "deliverables": ["Document listing page", "Document detail page", "Navigation link"]
+        },
+        {
+          "id": "phase_3",
+          "name": "Admin & Upload",
+          "description": "Implement admin upload interface with file handling",
+          "tasks": ["UPLOAD-001", "UPLOAD-002", "UPLOAD-003", "UPLOAD-004"],
+          "deliverables": ["Admin upload page", "CRUD server actions", "File upload functionality"]
+        },
+        {
+          "id": "phase_4",
+          "name": "Search & Polish",
+          "description": "Integrate with search and add sample data",
+          "tasks": ["SEARCH-001", "SEARCH-002", "SEARCH-003", "SEED-001"],
+          "deliverables": ["Document search integration", "Seed script"]
+        }
+      ]
+    },
+    "7_testing_strategy": {
+      "manual_testing": [
+        {
+          "test": "Browse documents listing",
+          "expected": "Paginated list of documents with metadata preview"
+        },
+        {
+          "test": "Filter by category (testimony, report, memo)",
+          "expected": "List updates to show only selected category"
+        },
+        {
+          "test": "View document detail page",
+          "expected": "Full metadata, content preview, related entities"
+        },
+        {
+          "test": "Upload document via admin interface",
+          "expected": "File uploads to storage, metadata saved to database"
+        },
+        {
+          "test": "Search for 'Warren Report'",
+          "expected": "Document appears in search results under Documents category"
+        },
+        {
+          "test": "Click document in search results",
+          "expected": "Navigates to correct document detail page"
+        }
+      ],
+      "edge_cases": [
+        {
+          "case": "Upload file exceeds size limit",
+          "expected": "Clear error message, upload rejected"
+        },
+        {
+          "case": "Missing required metadata fields",
+          "expected": "Form validation prevents submission"
+        },
+        {
+          "case": "Invalid file type uploaded",
+          "expected": "Error message, upload rejected"
+        },
+        {
+          "case": "Very long document title",
+          "expected": "Truncated with ellipsis in listing, full title on detail"
+        }
+      ]
+    },
+    "8_success_criteria": {
+      "functional": [
+        "Documents listing page displays paginated results",
+        "Category and agency filters work correctly",
+        "Document detail page shows all metadata fields",
+        "Admin can upload documents with metadata",
+        "Files are stored in Supabase Storage",
+        "Documents appear in search results",
+        "Related entities link to correct pages"
+      ],
+      "performance": [
+        "Listing page loads within 2 seconds",
+        "Pagination handles 2000+ documents smoothly",
+        "File uploads complete within reasonable time (10MB < 30s)"
+      ],
+      "ux": [
+        "Consistent styling with rest of application",
+        "Clear agency attribution display",
+        "Intuitive category organization",
+        "Responsive design for mobile viewing"
+      ]
+    },
+    "9_implementation_checklist": {
+      "phase_1_checklist": [
+        "[ ] Create src/types/document.ts with interfaces",
+        "[ ] Create documents table migration",
+        "[ ] Create storage bucket migration",
+        "[ ] Run migrations: npx supabase db push",
+        "[ ] Verify table and bucket created"
+      ],
+      "phase_2_checklist": [
+        "[ ] Create src/app/documents/page.tsx listing",
+        "[ ] Add category filter dropdown",
+        "[ ] Add agency filter dropdown (FBI, DPD, CIA, etc.)",
+        "[ ] Add pagination component",
+        "[ ] Add sorting controls",
+        "[ ] Create src/app/documents/[slug]/page.tsx detail",
+        "[ ] Add related entities section",
+        "[ ] Add document viewer component",
+        "[ ] Add navigation link to header"
+      ],
+      "phase_3_checklist": [
+        "[ ] Create src/app/admin/documents/page.tsx",
+        "[ ] Create src/app/admin/documents/actions.ts",
+        "[ ] Add metadata form with validation",
+        "[ ] Add file upload with progress",
+        "[ ] Test upload end-to-end"
+      ],
+      "phase_4_checklist": [
+        "[ ] Update src/lib/search.ts with document type",
+        "[ ] Add searchDocuments to actions.ts",
+        "[ ] Update search page UI",
+        "[ ] Create seed script",
+        "[ ] Run seed with sample documents",
+        "[ ] Full end-to-end testing"
+      ]
+    }
+  }
+}
