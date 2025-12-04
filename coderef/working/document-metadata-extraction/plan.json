@@ -1,0 +1,521 @@
+{
+  "META_DOCUMENTATION": {
+    "feature_name": "document-metadata-extraction",
+    "schema_version": "1.0.0",
+    "version": "1.0.0",
+    "status": "complete",
+    "generated_by": "AI Assistant",
+    "generated_at": "2025-12-04",
+    "has_context": true,
+    "has_analysis": true
+  },
+  "UNIVERSAL_PLANNING_STRUCTURE": {
+    "0_preparation": {
+      "foundation_docs": {
+        "readme": "README.md",
+        "architecture": "coderef/foundation-docs/ARCHITECTURE.md",
+        "api": "coderef/foundation-docs/API.md",
+        "components": "coderef/foundation-docs/COMPONENTS.md",
+        "schema": "coderef/foundation-docs/SCHEMA.md"
+      },
+      "key_files": {
+        "document_types": "src/types/document.ts",
+        "admin_actions": "src/app/admin/documents/actions.ts",
+        "admin_page": "src/app/admin/documents/page.tsx",
+        "supabase_client": "src/lib/supabase.ts"
+      },
+      "existing_patterns": {
+        "server_actions": "Server actions in actions.ts files for form handling",
+        "file_upload": "FormData-based file upload with progress tracking",
+        "type_definitions": "TypeScript interfaces in src/types/",
+        "agency_detection": "Existing DocumentAgency type with known agencies"
+      },
+      "free_tools_research": {
+        "pdf_text_extraction": "pdf.js (Mozilla) - extract text from text-based PDFs",
+        "ocr_engine": "Tesseract.js - browser/Node.js OCR for scanned images",
+        "image_processing": "Canvas API - preprocess images for better OCR",
+        "pdf_to_image": "pdf.js can render PDF pages to canvas for OCR"
+      }
+    },
+    "1_executive_summary": {
+      "feature_description": "Auto-extract metadata (title, date, agency, document number) from uploaded documents using free/open-source OCR and text parsing tools",
+      "primary_goal": "Full automation pipeline - reduce manual entry, improve accuracy, enable bulk uploads",
+      "target_audience": "Site administrators uploading primary source documents",
+      "scope": {
+        "in_scope": [
+          "Extract title from document header or filename",
+          "Detect dates and timestamps using regex patterns",
+          "Identify agency from letterhead, headers, or content keywords",
+          "Extract document numbers and reference IDs",
+          "Support text-based PDFs via pdf.js",
+          "Support scanned PDFs and images via Tesseract.js OCR",
+          "Support plain text files",
+          "Pre-fill admin upload form with extracted metadata",
+          "Allow user to review and correct before saving"
+        ],
+        "out_of_scope": [
+          "Full transcript generation",
+          "Entity extraction (people, places)",
+          "AI-powered summarization",
+          "Paid external APIs"
+        ]
+      },
+      "key_technologies": [
+        "pdf.js - PDF text extraction and rendering",
+        "Tesseract.js - Open-source OCR engine",
+        "Canvas API - Image preprocessing"
+      ]
+    },
+    "2_risk_assessment": {
+      "complexity_score": 6,
+      "complexity_rationale": "Medium-high complexity due to OCR integration, multiple file format handling, and pattern matching for metadata extraction. Tesseract.js adds bundle size and processing time considerations.",
+      "risks": [
+        {
+          "risk": "OCR accuracy on poor quality scans",
+          "likelihood": "high",
+          "impact": "medium",
+          "mitigation": "Image preprocessing (contrast, threshold), confidence scores, always allow manual override"
+        },
+        {
+          "risk": "Tesseract.js bundle size (~2MB worker)",
+          "likelihood": "certain",
+          "impact": "low",
+          "mitigation": "Lazy load OCR only when needed, show loading indicator"
+        },
+        {
+          "risk": "Processing time for large PDFs",
+          "likelihood": "medium",
+          "impact": "medium",
+          "mitigation": "Only OCR first 1-2 pages for metadata, show progress indicator"
+        },
+        {
+          "risk": "Varied document formats and layouts",
+          "likelihood": "high",
+          "impact": "medium",
+          "mitigation": "Multiple extraction patterns, fallback to filename parsing, confidence indicators"
+        },
+        {
+          "risk": "Agency detection false positives",
+          "likelihood": "medium",
+          "impact": "low",
+          "mitigation": "Require keyword + context matching, user confirmation"
+        }
+      ],
+      "dependencies": [
+        "pdf.js library",
+        "Tesseract.js library",
+        "Existing document upload infrastructure"
+      ]
+    },
+    "3_current_state_analysis": {
+      "existing_files": {
+        "src/types/document.ts": {
+          "status": "exists",
+          "action": "reference",
+          "notes": "Contains DocumentAgency, DocumentCategory types for validation"
+        },
+        "src/app/admin/documents/actions.ts": {
+          "status": "exists",
+          "action": "modify",
+          "notes": "Add extraction server action"
+        },
+        "src/app/admin/documents/page.tsx": {
+          "status": "exists",
+          "action": "modify",
+          "notes": "Add extract button, auto-fill form with results"
+        }
+      },
+      "files_to_create": [
+        {
+          "path": "src/lib/extraction/pdf-extractor.ts",
+          "purpose": "Extract text from PDF files using pdf.js"
+        },
+        {
+          "path": "src/lib/extraction/ocr-extractor.ts",
+          "purpose": "OCR processing using Tesseract.js for images and scanned PDFs"
+        },
+        {
+          "path": "src/lib/extraction/metadata-parser.ts",
+          "purpose": "Parse extracted text to find title, date, agency, document number"
+        },
+        {
+          "path": "src/lib/extraction/index.ts",
+          "purpose": "Main extraction orchestrator - detect file type, route to correct extractor"
+        },
+        {
+          "path": "src/components/extraction-preview.tsx",
+          "purpose": "UI component to show extraction results with confidence scores"
+        }
+      ]
+    },
+    "4_key_features": {
+      "features": [
+        {
+          "id": "EXTRACT-PDF",
+          "name": "PDF Text Extraction",
+          "description": "Extract text from text-based PDFs using pdf.js, render scanned PDFs to images for OCR",
+          "priority": "critical",
+          "dependencies": []
+        },
+        {
+          "id": "EXTRACT-OCR",
+          "name": "OCR Processing",
+          "description": "Use Tesseract.js to extract text from images and scanned document pages",
+          "priority": "critical",
+          "dependencies": []
+        },
+        {
+          "id": "PARSE-META",
+          "name": "Metadata Parsing",
+          "description": "Pattern matching to extract title, date, agency, document number from text",
+          "priority": "critical",
+          "dependencies": ["EXTRACT-PDF", "EXTRACT-OCR"]
+        },
+        {
+          "id": "UI-INTEGRATION",
+          "name": "Admin UI Integration",
+          "description": "Add extraction button to upload form, show results with confidence, auto-fill fields",
+          "priority": "high",
+          "dependencies": ["PARSE-META"]
+        },
+        {
+          "id": "BULK-SUPPORT",
+          "name": "Bulk Upload Support",
+          "description": "Process multiple files with extraction, queue system for large batches",
+          "priority": "medium",
+          "dependencies": ["UI-INTEGRATION"]
+        }
+      ]
+    },
+    "5_task_id_system": {
+      "workorder": {
+        "id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+        "name": "Document Metadata Extraction",
+        "feature_dir": "coderef/working/document-metadata-extraction"
+      },
+      "tasks": [
+        {
+          "id": "SETUP-001",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Install pdf.js and Tesseract.js dependencies",
+          "file": "package.json",
+          "action": "modify",
+          "estimated_loc": 5,
+          "dependencies": []
+        },
+        {
+          "id": "SETUP-002",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Create extraction library directory structure",
+          "file": "src/lib/extraction/",
+          "action": "create",
+          "estimated_loc": 0,
+          "dependencies": ["SETUP-001"]
+        },
+        {
+          "id": "PDF-001",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Implement PDF text extraction using pdf.js",
+          "file": "src/lib/extraction/pdf-extractor.ts",
+          "action": "create",
+          "estimated_loc": 80,
+          "dependencies": ["SETUP-002"]
+        },
+        {
+          "id": "PDF-002",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Add PDF page-to-image rendering for scanned PDFs",
+          "file": "src/lib/extraction/pdf-extractor.ts",
+          "action": "modify",
+          "estimated_loc": 40,
+          "dependencies": ["PDF-001"]
+        },
+        {
+          "id": "OCR-001",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Implement Tesseract.js OCR wrapper with lazy loading",
+          "file": "src/lib/extraction/ocr-extractor.ts",
+          "action": "create",
+          "estimated_loc": 70,
+          "dependencies": ["SETUP-002"]
+        },
+        {
+          "id": "OCR-002",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Add image preprocessing for better OCR accuracy",
+          "file": "src/lib/extraction/ocr-extractor.ts",
+          "action": "modify",
+          "estimated_loc": 50,
+          "dependencies": ["OCR-001"]
+        },
+        {
+          "id": "PARSE-001",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Implement title extraction (header detection, filename fallback)",
+          "file": "src/lib/extraction/metadata-parser.ts",
+          "action": "create",
+          "estimated_loc": 60,
+          "dependencies": ["SETUP-002"]
+        },
+        {
+          "id": "PARSE-002",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Implement date extraction with multiple format patterns",
+          "file": "src/lib/extraction/metadata-parser.ts",
+          "action": "modify",
+          "estimated_loc": 80,
+          "dependencies": ["PARSE-001"]
+        },
+        {
+          "id": "PARSE-003",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Implement agency detection from keywords and letterhead patterns",
+          "file": "src/lib/extraction/metadata-parser.ts",
+          "action": "modify",
+          "estimated_loc": 70,
+          "dependencies": ["PARSE-001"]
+        },
+        {
+          "id": "PARSE-004",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Implement document number extraction with common formats",
+          "file": "src/lib/extraction/metadata-parser.ts",
+          "action": "modify",
+          "estimated_loc": 50,
+          "dependencies": ["PARSE-001"]
+        },
+        {
+          "id": "ORCH-001",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Create main extraction orchestrator with file type detection",
+          "file": "src/lib/extraction/index.ts",
+          "action": "create",
+          "estimated_loc": 100,
+          "dependencies": ["PDF-001", "OCR-001", "PARSE-001"]
+        },
+        {
+          "id": "ORCH-002",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Add confidence scoring and result aggregation",
+          "file": "src/lib/extraction/index.ts",
+          "action": "modify",
+          "estimated_loc": 50,
+          "dependencies": ["ORCH-001"]
+        },
+        {
+          "id": "UI-001",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Create extraction preview component with confidence indicators",
+          "file": "src/components/extraction-preview.tsx",
+          "action": "create",
+          "estimated_loc": 120,
+          "dependencies": ["ORCH-001"]
+        },
+        {
+          "id": "UI-002",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Add extract button to admin upload form",
+          "file": "src/app/admin/documents/page.tsx",
+          "action": "modify",
+          "estimated_loc": 40,
+          "dependencies": ["UI-001"]
+        },
+        {
+          "id": "UI-003",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Implement auto-fill form fields from extraction results",
+          "file": "src/app/admin/documents/page.tsx",
+          "action": "modify",
+          "estimated_loc": 60,
+          "dependencies": ["UI-002"]
+        },
+        {
+          "id": "UI-004",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Add extraction progress indicator and loading states",
+          "file": "src/app/admin/documents/page.tsx",
+          "action": "modify",
+          "estimated_loc": 30,
+          "dependencies": ["UI-002"]
+        },
+        {
+          "id": "BULK-001",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Add multi-file selection to upload form",
+          "file": "src/app/admin/documents/page.tsx",
+          "action": "modify",
+          "estimated_loc": 40,
+          "dependencies": ["UI-003"]
+        },
+        {
+          "id": "BULK-002",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Implement batch extraction queue with progress",
+          "file": "src/app/admin/documents/page.tsx",
+          "action": "modify",
+          "estimated_loc": 80,
+          "dependencies": ["BULK-001"]
+        },
+        {
+          "id": "TEST-001",
+          "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+          "description": "Test extraction with sample documents",
+          "file": "manual testing",
+          "action": "test",
+          "estimated_loc": 0,
+          "dependencies": ["UI-003"]
+        }
+      ]
+    },
+    "6_implementation_phases": {
+      "phases": [
+        {
+          "phase": 1,
+          "name": "Setup & Core Extractors",
+          "description": "Install dependencies, create PDF and OCR extraction modules",
+          "tasks": ["SETUP-001", "SETUP-002", "PDF-001", "PDF-002", "OCR-001", "OCR-002"],
+          "deliverables": ["Dependencies installed", "PDF text extractor", "OCR extractor with preprocessing"]
+        },
+        {
+          "phase": 2,
+          "name": "Metadata Parsing",
+          "description": "Implement pattern matching for title, date, agency, and document numbers",
+          "tasks": ["PARSE-001", "PARSE-002", "PARSE-003", "PARSE-004"],
+          "deliverables": ["Title extraction", "Date extraction", "Agency detection", "Document number extraction"]
+        },
+        {
+          "phase": 3,
+          "name": "Orchestration & UI",
+          "description": "Create main extraction pipeline and integrate with admin upload form",
+          "tasks": ["ORCH-001", "ORCH-002", "UI-001", "UI-002", "UI-003", "UI-004"],
+          "deliverables": ["Extraction orchestrator", "Preview component", "Admin form integration"]
+        },
+        {
+          "phase": 4,
+          "name": "Bulk Upload & Testing",
+          "description": "Add multi-file support and test with real documents",
+          "tasks": ["BULK-001", "BULK-002", "TEST-001"],
+          "deliverables": ["Bulk upload support", "Tested and validated extraction"]
+        }
+      ]
+    },
+    "7_testing_strategy": {
+      "manual_testing": [
+        {
+          "test": "Upload text-based PDF",
+          "expected": "Text extracted, metadata fields populated"
+        },
+        {
+          "test": "Upload scanned PDF (image-based)",
+          "expected": "OCR runs, text extracted, metadata detected"
+        },
+        {
+          "test": "Upload JPG image of document",
+          "expected": "OCR extracts text, metadata parsed"
+        },
+        {
+          "test": "Upload plain text file",
+          "expected": "Text read directly, metadata parsed"
+        },
+        {
+          "test": "Document with clear FBI letterhead",
+          "expected": "Agency detected as 'fbi' with high confidence"
+        },
+        {
+          "test": "Document with date 'November 22, 1963'",
+          "expected": "Date extracted and formatted correctly"
+        },
+        {
+          "test": "Document with number 'File No. 105-82555'",
+          "expected": "Document number extracted"
+        },
+        {
+          "test": "Poor quality scan",
+          "expected": "Lower confidence scores, fields still editable"
+        },
+        {
+          "test": "Bulk upload 5 files",
+          "expected": "All processed with progress, results shown for each"
+        }
+      ],
+      "edge_cases": [
+        {
+          "case": "PDF with no text layer",
+          "expected": "Falls back to OCR automatically"
+        },
+        {
+          "case": "Very large PDF (50+ pages)",
+          "expected": "Only processes first 2 pages for metadata"
+        },
+        {
+          "case": "Corrupted or unreadable file",
+          "expected": "Graceful error message, manual entry still possible"
+        },
+        {
+          "case": "Document with multiple dates",
+          "expected": "Returns most prominent date, shows alternatives"
+        },
+        {
+          "case": "Unknown agency",
+          "expected": "Agency field left empty or set to 'other'"
+        }
+      ]
+    },
+    "8_success_criteria": {
+      "functional": [
+        "PDF text extraction works for text-based PDFs",
+        "OCR successfully extracts text from images and scanned PDFs",
+        "Title extraction identifies document titles with >70% accuracy",
+        "Date extraction recognizes common date formats",
+        "Agency detection correctly identifies FBI, CIA, DPD, Warren Commission, etc.",
+        "Document number extraction finds reference numbers",
+        "Results auto-fill the upload form",
+        "User can override any extracted value",
+        "Bulk upload processes multiple files"
+      ],
+      "performance": [
+        "Text PDF extraction completes in <2 seconds",
+        "OCR completes in <10 seconds per page",
+        "UI remains responsive during processing",
+        "Tesseract worker loads lazily (not on initial page load)"
+      ],
+      "ux": [
+        "Clear progress indicator during extraction",
+        "Confidence scores help user validate results",
+        "Easy to correct incorrect extractions",
+        "Extraction is optional - manual entry still works"
+      ]
+    },
+    "9_implementation_checklist": {
+      "phase_1_checklist": [
+        "[ ] Install pdfjs-dist and tesseract.js packages",
+        "[ ] Create src/lib/extraction/ directory",
+        "[ ] Implement pdf-extractor.ts with text extraction",
+        "[ ] Add PDF page-to-image rendering for scanned docs",
+        "[ ] Implement ocr-extractor.ts with Tesseract.js",
+        "[ ] Add image preprocessing (contrast, threshold)"
+      ],
+      "phase_2_checklist": [
+        "[ ] Implement title extraction in metadata-parser.ts",
+        "[ ] Add date extraction with regex patterns",
+        "[ ] Implement agency detection with keyword matching",
+        "[ ] Add document number extraction patterns"
+      ],
+      "phase_3_checklist": [
+        "[ ] Create extraction orchestrator in index.ts",
+        "[ ] Add confidence scoring system",
+        "[ ] Create extraction-preview.tsx component",
+        "[ ] Add 'Extract Metadata' button to admin form",
+        "[ ] Implement auto-fill from extraction results",
+        "[ ] Add progress indicator during extraction"
+      ],
+      "phase_4_checklist": [
+        "[ ] Add multi-file selection support",
+        "[ ] Implement batch extraction queue",
+        "[ ] Test with various document types",
+        "[ ] Test with poor quality scans",
+        "[ ] Verify all metadata fields populate correctly"
+      ]
+    }
+  }
+}

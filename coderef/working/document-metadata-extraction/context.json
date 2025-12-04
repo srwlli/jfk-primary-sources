@@ -1,0 +1,31 @@
+{
+  "feature_name": "document-metadata-extraction",
+  "description": "Auto-extract metadata (title, date, agency, document number) from uploaded documents using OCR and text parsing. Supports PDF, scanned images, and text files. Reduces manual data entry and enables bulk uploads.",
+  "goal": "Full automation pipeline - reduce manual entry, improve accuracy, enable bulk uploads",
+  "requirements": [
+    "Auto-extract title/document name from header or filename",
+    "Auto-detect dates and timestamps",
+    "Identify agency (FBI, CIA, DPD, etc.) from letterhead or content",
+    "Extract official document numbers/IDs",
+    "Support text-based PDFs",
+    "Support scanned/image PDFs with OCR",
+    "Support image files (JPG/PNG)",
+    "Support plain text files"
+  ],
+  "out_of_scope": [
+    "Full transcript generation (complete OCR of entire document)",
+    "Entity extraction (detecting related people and locations)",
+    "AI-powered summarization"
+  ],
+  "constraints": [
+    "Free/open-source OCR only (Tesseract.js, pdf.js)",
+    "No paid external APIs (no Google Vision, AWS Textract, OpenAI)"
+  ],
+  "decisions": {},
+  "success_criteria": {},
+  "_metadata": {
+    "workorder_id": "WO-DOCUMENT-METADATA-EXTRACTION-001",
+    "workorder_assigned_at": "2025-12-04T16:11:17.741615+00:00",
+    "workorder_assigned_by": "gather_context"
+  }
+}
