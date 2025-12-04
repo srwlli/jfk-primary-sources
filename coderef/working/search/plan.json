@@ -1,0 +1,450 @@
+{
+  "META_DOCUMENTATION": {
+    "feature_name": "search",
+    "version": "1.0.0",
+    "status": "complete",
+    "generated_by": "AI Assistant",
+    "generated_at": "2025-12-03",
+    "has_context": false,
+    "has_analysis": false
+  },
+  "UNIVERSAL_PLANNING_STRUCTURE": {
+    "0_preparation": {
+      "foundation_docs": {
+        "readme": "README.md",
+        "architecture": "coderef/foundation-docs/ARCHITECTURE.md",
+        "api": "coderef/foundation-docs/API.md",
+        "components": "coderef/foundation-docs/COMPONENTS.md",
+        "schema": "coderef/foundation-docs/SCHEMA.md"
+      },
+      "key_files": {
+        "search_page": "src/app/search/page.tsx",
+        "supabase_client": "src/lib/supabase.ts",
+        "utils": "src/lib/utils.ts",
+        "evidence_data": "src/data/evidence.ts",
+        "sources_data": "src/data/sources.ts",
+        "timeline_data": "src/data/lho-timeline.ts"
+      },
+      "existing_patterns": {
+        "supabase_query": "Server-side Supabase queries in page.tsx files",
+        "client_component": "'use client' directive for interactive components",
+        "styling": "Tailwind CSS with CSS variables for theming",
+        "icons": "Material Symbols Outlined"
+      }
+    },
+    "1_executive_summary": {
+      "feature_description": "Implement functional search across all content types in the JFK Primary Sources app",
+      "primary_goal": "Enable researchers to quickly find people, locations, investigations, incidents, evidence, sources, and timeline events",
+      "target_audience": "Serious researchers needing fast access to historical data",
+      "scope": {
+        "in_scope": [
+          "Search UI with real-time results",
+          "Debounced search input",
+          "Results grouped by content type",
+          "Snippet highlighting",
+          "Loading and empty states"
+        ],
+        "out_of_scope": [
+          "Full-text search with tsvector (future enhancement)",
+          "Search suggestions/autocomplete",
+          "Recent searches history",
+          "Saved searches"
+        ]
+      }
+    },
+    "2_risk_assessment": {
+      "complexity_score": 3,
+      "complexity_rationale": "Medium complexity - involves server action, Supabase queries, and static data filtering but no database schema changes",
+      "risks": [
+        {
+          "risk": "JSONB column search complexity",
+          "likelihood": "medium",
+          "impact": "medium",
+          "mitigation": "Use simple text extraction from JSONB rather than complex queries"
+        },
+        {
+          "risk": "Performance with large result sets",
+          "likelihood": "low",
+          "impact": "medium",
+          "mitigation": "Limit results to 10 per category, use debouncing"
+        },
+        {
+          "risk": "Static data export functions may not exist",
+          "likelihood": "medium",
+          "impact": "low",
+          "mitigation": "Create getter functions if needed or import data directly"
+        }
+      ],
+      "dependencies": [
+        "Supabase client already configured",
+        "Static data files exist in src/data/",
+        "Search page UI skeleton exists"
+      ]
+    },
+    "3_current_state_analysis": {
+      "existing_files": {
+        "src/app/search/page.tsx": {
+          "status": "exists",
+          "action": "modify",
+          "notes": "Has UI skeleton with input, needs results display and search logic"
+        },
+        "src/lib/supabase.ts": {
+          "status": "exists",
+          "action": "reference",
+          "notes": "Use existing Supabase client pattern"
+        },
+        "src/data/evidence.ts": {
+          "status": "exists",
+          "action": "reference",
+          "notes": "Import and search static evidence data"
+        },
+        "src/data/sources.ts": {
+          "status": "exists",
+          "action": "reference",
+          "notes": "Import and search static sources data"
+        },
+        "src/data/lho-timeline.ts": {
+          "status": "exists",
+          "action": "reference",
+          "notes": "Import and search timeline sections"
+        }
+      },
+      "new_files": {
+        "src/lib/search.ts": {
+          "purpose": "Search types and utility functions",
+          "exports": ["SearchResult", "GroupedSearchResults", "highlightMatches", "createSnippet", "scoreMatch"]
+        },
+        "src/app/search/actions.ts": {
+          "purpose": "Server action for unified search",
+          "exports": ["search"]
+        }
+      }
+    },
+    "4_key_features": {
+      "features": [
+        {
+          "id": "SEARCH-UTIL",
+          "name": "Search Utilities",
+          "description": "Type definitions and helper functions for search operations",
+          "priority": "high",
+          "dependencies": []
+        },
+        {
+          "id": "SEARCH-ACTION",
+          "name": "Search Server Action",
+          "description": "Unified search endpoint querying database and static data",
+          "priority": "high",
+          "dependencies": ["SEARCH-UTIL"]
+        },
+        {
+          "id": "SEARCH-UI",
+          "name": "Search Results UI",
+          "description": "Display grouped results with debouncing and loading states",
+          "priority": "high",
+          "dependencies": ["SEARCH-ACTION"]
+        }
+      ]
+    },
+    "5_task_id_system": {
+      "workorder": {
+        "id": "WO-SEARCH-001",
+        "name": "Search",
+        "feature_dir": "coderef/working/search"
+      },
+      "tasks": [
+        {
+          "id": "SETUP-001",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Create search types and interfaces",
+          "file": "src/lib/search.ts",
+          "action": "create",
+          "estimated_loc": 30,
+          "dependencies": []
+        },
+        {
+          "id": "SETUP-002",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Create highlightMatches utility function",
+          "file": "src/lib/search.ts",
+          "action": "append",
+          "estimated_loc": 15,
+          "dependencies": ["SETUP-001"]
+        },
+        {
+          "id": "SETUP-003",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Create createSnippet utility function",
+          "file": "src/lib/search.ts",
+          "action": "append",
+          "estimated_loc": 25,
+          "dependencies": ["SETUP-001"]
+        },
+        {
+          "id": "SETUP-004",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Create scoreMatch utility function",
+          "file": "src/lib/search.ts",
+          "action": "append",
+          "estimated_loc": 20,
+          "dependencies": ["SETUP-001"]
+        },
+        {
+          "id": "ACTION-001",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Create server action file with search function signature",
+          "file": "src/app/search/actions.ts",
+          "action": "create",
+          "estimated_loc": 20,
+          "dependencies": ["SETUP-001"]
+        },
+        {
+          "id": "ACTION-002",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Implement searchPeople function",
+          "file": "src/app/search/actions.ts",
+          "action": "append",
+          "estimated_loc": 25,
+          "dependencies": ["ACTION-001"]
+        },
+        {
+          "id": "ACTION-003",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Implement searchLocations function",
+          "file": "src/app/search/actions.ts",
+          "action": "append",
+          "estimated_loc": 25,
+          "dependencies": ["ACTION-001"]
+        },
+        {
+          "id": "ACTION-004",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Implement searchInvestigations function (JSONB)",
+          "file": "src/app/search/actions.ts",
+          "action": "append",
+          "estimated_loc": 30,
+          "dependencies": ["ACTION-001"]
+        },
+        {
+          "id": "ACTION-005",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Implement searchIncidents function (JSONB)",
+          "file": "src/app/search/actions.ts",
+          "action": "append",
+          "estimated_loc": 30,
+          "dependencies": ["ACTION-001"]
+        },
+        {
+          "id": "ACTION-006",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Implement searchEvidence function (static data)",
+          "file": "src/app/search/actions.ts",
+          "action": "append",
+          "estimated_loc": 25,
+          "dependencies": ["ACTION-001"]
+        },
+        {
+          "id": "ACTION-007",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Implement searchSources function (static data)",
+          "file": "src/app/search/actions.ts",
+          "action": "append",
+          "estimated_loc": 25,
+          "dependencies": ["ACTION-001"]
+        },
+        {
+          "id": "ACTION-008",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Implement searchTimeline function (static data)",
+          "file": "src/app/search/actions.ts",
+          "action": "append",
+          "estimated_loc": 30,
+          "dependencies": ["ACTION-001"]
+        },
+        {
+          "id": "ACTION-009",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Implement main search function with Promise.all",
+          "file": "src/app/search/actions.ts",
+          "action": "append",
+          "estimated_loc": 40,
+          "dependencies": ["ACTION-002", "ACTION-003", "ACTION-004", "ACTION-005", "ACTION-006", "ACTION-007", "ACTION-008"]
+        },
+        {
+          "id": "UI-001",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Add useDebounce hook to search page",
+          "file": "src/app/search/page.tsx",
+          "action": "modify",
+          "estimated_loc": 15,
+          "dependencies": []
+        },
+        {
+          "id": "UI-002",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Add search state and useTransition",
+          "file": "src/app/search/page.tsx",
+          "action": "modify",
+          "estimated_loc": 20,
+          "dependencies": ["UI-001", "ACTION-009"]
+        },
+        {
+          "id": "UI-003",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Create ResultItem component",
+          "file": "src/app/search/page.tsx",
+          "action": "modify",
+          "estimated_loc": 20,
+          "dependencies": ["UI-002"]
+        },
+        {
+          "id": "UI-004",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Create ResultSection component",
+          "file": "src/app/search/page.tsx",
+          "action": "modify",
+          "estimated_loc": 25,
+          "dependencies": ["UI-003"]
+        },
+        {
+          "id": "UI-005",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Update search page with results display",
+          "file": "src/app/search/page.tsx",
+          "action": "modify",
+          "estimated_loc": 50,
+          "dependencies": ["UI-004"]
+        },
+        {
+          "id": "UI-006",
+          "workorder_id": "WO-SEARCH-001",
+          "description": "Add loading and empty states",
+          "file": "src/app/search/page.tsx",
+          "action": "modify",
+          "estimated_loc": 30,
+          "dependencies": ["UI-005"]
+        }
+      ]
+    },
+    "6_implementation_phases": {
+      "phases": [
+        {
+          "id": "phase_1",
+          "name": "Search Utilities",
+          "description": "Create type definitions and helper functions",
+          "tasks": ["SETUP-001", "SETUP-002", "SETUP-003", "SETUP-004"],
+          "estimated_duration": "30 minutes",
+          "deliverables": ["src/lib/search.ts with types and utilities"]
+        },
+        {
+          "id": "phase_2",
+          "name": "Server Action",
+          "description": "Implement search server action with all content type searches",
+          "tasks": ["ACTION-001", "ACTION-002", "ACTION-003", "ACTION-004", "ACTION-005", "ACTION-006", "ACTION-007", "ACTION-008", "ACTION-009"],
+          "estimated_duration": "60 minutes",
+          "deliverables": ["src/app/search/actions.ts with complete search function"]
+        },
+        {
+          "id": "phase_3",
+          "name": "Search UI",
+          "description": "Update search page with results display and state management",
+          "tasks": ["UI-001", "UI-002", "UI-003", "UI-004", "UI-005", "UI-006"],
+          "estimated_duration": "45 minutes",
+          "deliverables": ["Fully functional search page with grouped results"]
+        }
+      ]
+    },
+    "7_testing_strategy": {
+      "manual_testing": [
+        {
+          "test": "Search for 'Oswald'",
+          "expected": "Returns results in People, Locations, Timeline categories"
+        },
+        {
+          "test": "Search for 'Warren'",
+          "expected": "Returns results in Investigations, People categories"
+        },
+        {
+          "test": "Search for 'rifle'",
+          "expected": "Returns results in Evidence category"
+        },
+        {
+          "test": "Type rapidly",
+          "expected": "Debouncing prevents excessive requests"
+        },
+        {
+          "test": "Search for 'xyznonexistent'",
+          "expected": "Shows empty state message"
+        },
+        {
+          "test": "Click a result",
+          "expected": "Navigates to correct detail page"
+        }
+      ],
+      "edge_cases": [
+        {
+          "case": "Empty query",
+          "expected": "Shows initial state, no search triggered"
+        },
+        {
+          "case": "Single character query",
+          "expected": "No search triggered (minimum 2 chars)"
+        },
+        {
+          "case": "Special characters in query",
+          "expected": "Handled gracefully, no errors"
+        }
+      ]
+    },
+    "8_success_criteria": {
+      "functional": [
+        "Search returns results from all 7 content types",
+        "Results are grouped and labeled by type",
+        "Snippets show relevant text with highlights",
+        "Loading state visible during search",
+        "Empty state shown when no results",
+        "Results link to correct detail pages"
+      ],
+      "performance": [
+        "Debounce delay of 300ms prevents excessive requests",
+        "Search completes within 2 seconds",
+        "No UI freezing during search"
+      ],
+      "ux": [
+        "Clear search button works",
+        "Result count displayed",
+        "Intuitive category icons"
+      ]
+    },
+    "9_implementation_checklist": {
+      "phase_1_checklist": [
+        "[ ] Create src/lib/search.ts",
+        "[ ] Define SearchResult interface",
+        "[ ] Define GroupedSearchResults interface",
+        "[ ] Implement highlightMatches function",
+        "[ ] Implement createSnippet function",
+        "[ ] Implement scoreMatch function"
+      ],
+      "phase_2_checklist": [
+        "[ ] Create src/app/search/actions.ts",
+        "[ ] Implement searchPeople with Supabase query",
+        "[ ] Implement searchLocations with Supabase query",
+        "[ ] Implement searchInvestigations (JSONB)",
+        "[ ] Implement searchIncidents (JSONB)",
+        "[ ] Implement searchEvidence (static data)",
+        "[ ] Implement searchSources (static data)",
+        "[ ] Implement searchTimeline (static data)",
+        "[ ] Implement main search function with Promise.all"
+      ],
+      "phase_3_checklist": [
+        "[ ] Add useDebounce hook",
+        "[ ] Add search state with useTransition",
+        "[ ] Create ResultItem component",
+        "[ ] Create ResultSection component",
+        "[ ] Update main page with results display",
+        "[ ] Add loading spinner",
+        "[ ] Add empty state",
+        "[ ] Add result count display"
+      ]
+    }
+  }
+}

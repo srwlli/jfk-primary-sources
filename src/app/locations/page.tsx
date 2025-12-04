@@ -67,14 +67,7 @@ export default async function LocationsPage() {
                     </span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <h3 className="font-bold">{location.name}</h3>
-                          {location.short_name && (
-                            <span className="text-xs text-primary font-medium">
-                              {location.short_name}
-                            </span>
-                          )}
-                        </div>
+                        <h3 className="font-bold">{location.name}</h3>
                         <span className="material-symbols-outlined text-muted-foreground text-xl shrink-0">
                           arrow_forward_ios
                         </span>
