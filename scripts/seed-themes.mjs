@@ -516,6 +516,95 @@ const themes = [
       default: "all 0.3s ease-out",
       fast: "all 0.2s ease-out"
     }
+  },
+  {
+    name: "Brutalist",
+    description: "Raw, bold aesthetic with stark contrasts, sharp edges, and unapologetic minimalism",
+    is_active: false,
+    fonts: {
+      display: {
+        family: "Space Mono",
+        fallback: ["monospace"]
+      },
+      body: {
+        family: "Space Mono",
+        fallback: ["monospace"]
+      }
+    },
+    light: {
+      name: "Light Mode",
+      colors: {
+        background: { value: "#FFFFFF", description: "Pure white background" },
+        foreground: { value: "#000000", description: "Pure black text" },
+        card: { value: "#FFFFFF", description: "White card backgrounds" },
+        "card-foreground": { value: "#000000", description: "Black text on cards" },
+        popover: { value: "#FFFFFF", description: "White popover background" },
+        "popover-foreground": { value: "#000000", description: "Black popover text" },
+        primary: { value: "#000000", description: "Black primary buttons" },
+        "primary-foreground": { value: "#FFFFFF", description: "White text on primary" },
+        secondary: { value: "#F0F0F0", description: "Light gray secondary" },
+        "secondary-foreground": { value: "#000000", description: "Black text on secondary" },
+        muted: { value: "#E5E5E5", description: "Muted gray tone" },
+        "muted-foreground": { value: "#666666", description: "Medium gray text" },
+        accent: { value: "#FF0000", description: "Bold red accent" },
+        "accent-foreground": { value: "#FFFFFF", description: "White text on accent" },
+        destructive: { value: "#FF0000", description: "Red for errors/delete" },
+        border: { value: "#000000", description: "Bold black borders" },
+        input: { value: "#000000", description: "Black input borders" },
+        ring: { value: "#000000", description: "Black focus ring" },
+        "icon-color": { value: "#000000", description: "Black icon color" },
+        sidebar: { value: "#F0F0F0", description: "Light gray sidebar" },
+        "sidebar-foreground": { value: "#000000", description: "Black sidebar text" },
+        "sidebar-primary": { value: "#000000", description: "Black active item" },
+        "sidebar-primary-foreground": { value: "#FFFFFF", description: "White active text" },
+        "sidebar-accent": { value: "#E5E5E5", description: "Gray hover background" },
+        "sidebar-accent-foreground": { value: "#000000", description: "Black hover text" },
+        "sidebar-border": { value: "#000000", description: "Black sidebar borders" },
+        "sidebar-ring": { value: "#000000", description: "Black sidebar focus ring" }
+      }
+    },
+    dark: {
+      name: "Dark Mode",
+      colors: {
+        background: { value: "#000000", description: "Pure black background" },
+        foreground: { value: "#FFFFFF", description: "Pure white text" },
+        card: { value: "#111111", description: "Near-black card backgrounds" },
+        "card-foreground": { value: "#FFFFFF", description: "White text on cards" },
+        popover: { value: "#111111", description: "Near-black popover background" },
+        "popover-foreground": { value: "#FFFFFF", description: "White popover text" },
+        primary: { value: "#FFFFFF", description: "White primary buttons" },
+        "primary-foreground": { value: "#000000", description: "Black text on primary" },
+        secondary: { value: "#1A1A1A", description: "Dark gray secondary" },
+        "secondary-foreground": { value: "#FFFFFF", description: "White text on secondary" },
+        muted: { value: "#222222", description: "Muted dark tone" },
+        "muted-foreground": { value: "#888888", description: "Medium gray text" },
+        accent: { value: "#FF0000", description: "Bold red accent" },
+        "accent-foreground": { value: "#FFFFFF", description: "White text on accent" },
+        destructive: { value: "#CC0000", description: "Dark red for errors/delete" },
+        border: { value: "#FFFFFF", description: "Bold white borders" },
+        input: { value: "#FFFFFF", description: "White input borders" },
+        ring: { value: "#FFFFFF", description: "White focus ring" },
+        "icon-color": { value: "#FFFFFF", description: "White icon color" },
+        sidebar: { value: "#111111", description: "Near-black sidebar" },
+        "sidebar-foreground": { value: "#FFFFFF", description: "White sidebar text" },
+        "sidebar-primary": { value: "#FFFFFF", description: "White active item" },
+        "sidebar-primary-foreground": { value: "#000000", description: "Black active text" },
+        "sidebar-accent": { value: "#222222", description: "Dark gray hover" },
+        "sidebar-accent-foreground": { value: "#FFFFFF", description: "White hover text" },
+        "sidebar-border": { value: "rgba(255, 255, 255, 0.3)", description: "Subtle white borders" },
+        "sidebar-ring": { value: "#FFFFFF", description: "White sidebar focus ring" }
+      }
+    },
+    border_radius: {
+      base: "0",
+      sm: "0",
+      md: "0",
+      lg: "0",
+      xl: "0"
+    },
+    transitions: {
+      default: "all 0.1s linear"
+    }
   }
 ]
 

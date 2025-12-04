@@ -1,0 +1,152 @@
+{
+  "purpose": "Instructions for AI agents on how to manage the Supabase database for this project",
+  "last_updated": "2024-12-03",
+
+  "project_info": {
+    "project_name": "primary-sources",
+    "project_ref": "grdwmwhqzvvjkfpfeauh",
+    "supabase_url": "https://grdwmwhqzvvjkfpfeauh.supabase.co",
+    "region": "East US (North Virginia)"
+  },
+
+  "cli_setup": {
+    "check_version": "npx supabase --version",
+    "check_login": "npx supabase projects list",
+    "login_if_needed": "npx supabase login",
+    "link_project": "npx supabase link --project-ref grdwmwhqzvvjkfpfeauh",
+    "note": "CLI should already be logged in and linked. Check with 'projects list' - linked project shows ● symbol."
+  },
+
+  "migrations": {
+    "location": "supabase/migrations/",
+    "naming_convention": "YYYYMMDDHHMMSS_description.sql",
+    "example": "20251203210000_create_locations_table.sql",
+
+    "how_to_create_migration": {
+      "step_1": "Create a new .sql file in supabase/migrations/ with timestamp prefix",
+      "step_2": "Write SQL DDL statements (CREATE TABLE, ALTER TABLE, etc.)",
+      "step_3": "Include RLS policies if table needs public read access",
+      "template": {
+        "create_table": "CREATE TABLE table_name (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  slug TEXT UNIQUE NOT NULL,\n  name TEXT NOT NULL,\n  -- add columns here\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ DEFAULT NOW()\n);",
+        "enable_rls": "ALTER TABLE table_name ENABLE ROW LEVEL SECURITY;",
+        "public_read_policy": "CREATE POLICY \"Allow public read access\" ON table_name\n  FOR SELECT USING (true);"
+      }
+    },
+
+    "how_to_apply_migration": {
+      "command": "npx supabase db push",
+      "run_from": "jfk-primary-sources directory",
+      "what_it_does": "Pushes all pending migrations to the remote Supabase database",
+      "note": "Command will prompt for confirmation before applying"
+    },
+
+    "check_migration_status": {
+      "command": "npx supabase migration list",
+      "shows": "Which migrations have been applied to remote database"
+    }
+  },
+
+  "seeding_data": {
+    "location": "scripts/",
+    "pattern": "seed-{tablename}.mjs",
+    "examples": ["seed-themes.mjs", "seed-locations.mjs", "seed-people.mjs"],
+
+    "how_to_run_seed": {
+      "command": "SUPABASE_SERVICE_ROLE_KEY=\"sb_secret_yEFaFoNgJhL1qAv9CIKhvA_w5FUJ6wd\" node scripts/seed-{tablename}.mjs",
+      "run_from": "jfk-primary-sources directory",
+      "important": "Must use SUPABASE_SERVICE_ROLE_KEY to bypass RLS for inserts/upserts"
+    },
+
+    "seed_script_template": {
+      "description": "Use this template when creating new seed scripts",
+      "code": "import { createClient } from '@supabase/supabase-js'\n\nconst supabaseUrl = 'https://grdwmwhqzvvjkfpfeauh.supabase.co'\nconst supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY\n\nconst supabase = createClient(supabaseUrl, supabaseKey)\n\nconst items = [\n  // data objects here\n]\n\nasync function seed() {\n  console.log('Seeding table_name table...')\n\n  const { data, error } = await supabase\n    .from('table_name')\n    .upsert(items, { onConflict: 'slug' })\n    .select()\n\n  if (error) {\n    console.error('Error seeding:', error)\n    process.exit(1)\n  }\n\n  console.log(`Successfully seeded ${data.length} item(s)`)\n}\n\nseed()"
+    }
+  },
+
+  "environment_variables": {
+    "location": "jfk-primary-sources/.env.local",
+    "required_vars": {
+      "NEXT_PUBLIC_SUPABASE_URL": "https://grdwmwhqzvvjkfpfeauh.supabase.co",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY": "Used for client-side read access",
+      "SUPABASE_SERVICE_ROLE_KEY": "Used for server-side writes (bypasses RLS)"
+    },
+    "service_key_format": "sb_secret_xxxxx (new Supabase format, not JWT)"
+  },
+
+  "common_tasks": {
+    "add_new_table": {
+      "steps": [
+        "1. Create migration file: supabase/migrations/YYYYMMDDHHMMSS_create_tablename_table.sql",
+        "2. Write CREATE TABLE SQL with columns, indexes, RLS",
+        "3. Run: npx supabase db push",
+        "4. Create seed script: scripts/seed-tablename.mjs",
+        "5. Run seed: SUPABASE_SERVICE_ROLE_KEY=\"sb_secret_yEFaFoNgJhL1qAv9CIKhvA_w5FUJ6wd\" node scripts/seed-tablename.mjs"
+      ]
+    },
+
+    "add_column_to_existing_table": {
+      "steps": [
+        "1. Create migration: supabase/migrations/YYYYMMDDHHMMSS_add_column_to_tablename.sql",
+        "2. Write: ALTER TABLE tablename ADD COLUMN column_name TYPE;",
+        "3. Run: npx supabase db push"
+      ]
+    },
+
+    "update_seed_data": {
+      "steps": [
+        "1. Edit the seed script in scripts/seed-tablename.mjs",
+        "2. Run seed again - upsert will update existing rows based on conflict key"
+      ],
+      "note": "Scripts use upsert with onConflict, so re-running is safe"
+    }
+  },
+
+  "existing_tables": [
+    {
+      "name": "people",
+      "seed_script": "scripts/seed-people.mjs",
+      "conflict_key": "slug"
+    },
+    {
+      "name": "investigations",
+      "seed_script": "scripts/seed-investigations.mjs",
+      "conflict_key": "slug"
+    },
+    {
+      "name": "incidents",
+      "seed_script": "scripts/seed-incidents.mjs",
+      "conflict_key": "slug"
+    },
+    {
+      "name": "themes",
+      "seed_script": "scripts/seed-themes.mjs",
+      "conflict_key": "name"
+    },
+    {
+      "name": "locations",
+      "seed_script": "scripts/seed-locations.mjs",
+      "conflict_key": "slug"
+    }
+  ],
+
+  "troubleshooting": {
+    "rls_error": {
+      "error": "new row violates row-level security policy",
+      "cause": "Using anon key instead of service role key",
+      "fix": "Prefix command with SUPABASE_SERVICE_ROLE_KEY=\"sb_secret_yEFaFoNgJhL1qAv9CIKhvA_w5FUJ6wd\""
+    },
+    "table_not_found": {
+      "error": "Could not find the table 'public.tablename' in the schema cache",
+      "cause": "Migration not applied yet",
+      "fix": "Run: npx supabase db push"
+    },
+    "cli_not_logged_in": {
+      "error": "Not logged in",
+      "fix": "Run: npx supabase login"
+    },
+    "project_not_linked": {
+      "error": "Project not linked",
+      "fix": "Run: npx supabase link --project-ref grdwmwhqzvvjkfpfeauh"
+    }
+  }
+}

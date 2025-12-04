@@ -38,6 +38,12 @@ const categories = [
     href: "/incidents",
   },
   {
+    name: "Locations",
+    description: "Points of interest",
+    icon: "place",
+    href: "/locations",
+  },
+  {
     name: "Media",
     description: "News & film",
     icon: "movie",

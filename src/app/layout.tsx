@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display, Source_Sans_3 } from "next/font/google";
+import { Inter, Playfair_Display, Source_Sans_3, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeContextProvider } from "@/contexts/theme-context";
@@ -20,6 +20,12 @@ const playfair = Playfair_Display({
 const sourceSans = Source_Sans_3({
   variable: "--font-source-sans",
   subsets: ["latin"],
+});
+
+const spaceMono = Space_Mono({
+  variable: "--font-space-mono",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -75,7 +81,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="JFK Sources" />
       </head>
-      <body className={`${inter.variable} ${playfair.variable} ${sourceSans.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${playfair.variable} ${sourceSans.variable} ${spaceMono.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

@@ -80,6 +80,7 @@ export function ThemeContextProvider({ children }: { children: ReactNode }) {
     "Source Sans 3": "'Source Sans 3', 'Source Sans Pro', system-ui, sans-serif",
     "Inter": "'Inter', system-ui, sans-serif",
     "Geist Sans": "'Inter', system-ui, sans-serif",
+    "Space Mono": "'Space Mono', monospace",
   }
 
   // Apply CSS variables when theme or mode changes
